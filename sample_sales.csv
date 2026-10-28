@@ -1,0 +1,5 @@
+
+date,order_id,product,quantity,unit_price
+2026-10-15,ORD-001,Rice,2,3000
+2026-10-15,ORD-001,Sugar,1,2500
+2026-10-16,ORD-002,Soap,3,1500

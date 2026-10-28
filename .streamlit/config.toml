@@ -1,0 +1,11 @@
+TOML
+
+
+
+[theme]
+base = "light"
+primaryColor = "#2563EB"
+backgroundColor = "#F7F9FC"
+secondaryBackgroundColor = "#FFFFFF"
+textColor = "#172B4D"
+font = "sans serif"
