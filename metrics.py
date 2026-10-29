@@ -13,17 +13,17 @@ def calculate_metrics(sales: pd.DataFrame) -> dict:
             f"Missing required columns: {sorted(missing)}"
         )
 
-    revenue = sales["quantity"] * sales["unit_price"]
-    total_revenue = float(revenue.sum())
+    sales_amount = sales["quantity"] * sales["unit_price"]
+    total_sales = float(sales_amount.sum())
     total_orders = int(sales["order_id"].nunique())
     units_sold = int(sales["quantity"].sum())
 
     average_order_value = (
-        total_revenue / total_orders if total_orders > 0 else 0.0
+        total_sales / total_orders if total_orders > 0 else 0.0
     )
 
     return {
-        "total_revenue": total_revenue,
+        "total_sales": total_sales,
         "total_orders": total_orders,
         "units_sold": units_sold,
         "average_order_value": average_order_value,

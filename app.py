@@ -142,7 +142,7 @@ def load_sales():
         raise ValueError("No valid sales records were found.")
 
     df["quantity"] = df["quantity"].astype(int)
-    df["revenue"] = df["quantity"] * df["unit_price"]
+    df["sales"] = df["quantity"] * df["unit_price"]
 
     return df
 
@@ -292,7 +292,7 @@ if uploaded_file is not None:
             st.stop()
 
         uploaded_sales["quantity"] = uploaded_sales["quantity"].astype(int)
-        uploaded_sales["revenue"] = (
+        uploaded_sales["sales"] = (
             uploaded_sales["quantity"] * uploaded_sales["unit_price"]
         )
 
@@ -303,12 +303,12 @@ if uploaded_file is not None:
 
 
 # ---------- KPI cards ----------
-total_revenue = filtered["revenue"].sum()
+total_sales = filtered["sales"].sum()
 total_orders = filtered["order_id"].nunique()
 total_units = filtered["quantity"].sum()
 
 average_order_value = (
-    total_revenue / total_orders if total_orders else 0
+    total_sales / total_orders if total_orders else 0
 )
 
 st.subheader("Sales overview")
@@ -318,8 +318,8 @@ metrics = calculate_metrics(filtered)
 col1, col2, col3, col4 = st.columns(4)
 
 col1.metric(
-    "Sales Revenue",
-    f"TSh {metrics['total_revenue']:,.0f}"
+    "Sales",
+    f"TSh {metrics['total_sales']:,.0f}"
 )
 
 col2.metric(
@@ -342,16 +342,16 @@ st.subheader("Sales performance")
 
 daily = (
     filtered.assign(day=filtered["date"].dt.date)
-    .groupby("day", as_index=False)["revenue"]
+    .groupby("day", as_index=False)["sales"]
     .sum()
 )
 
-product_revenue = (
-    filtered.groupby("product", as_index=False)["revenue"]
+product_sales = (
+    filtered.groupby("product", as_index=False)["sales"]
     .sum()
-    .sort_values("revenue", ascending=True)
+    .sort_values("sales", ascending=True)
 )
-#Business insights: Revenue over time and revenue by product are displayed side by side for easy comparison and analysis.
+#Business insights: Sales over time and sales by product are displayed side by side for easy comparison and analysis.
 st.subheader("Business insights")
 st.markdown("#### Top 5 Most Sold Products")
 
@@ -363,7 +363,7 @@ else:
         filtered.groupby("product", as_index=False)
         .agg(
             units_sold=("quantity", "sum"),
-            revenue=("revenue", "sum"),
+            sales=("sales", "sum"),
         )
         .sort_values(by=["units_sold", "product"], ascending=[False, True])
         .head(5)
@@ -374,23 +374,23 @@ else:
     top_products.index.name="Rank"
 
     st.dataframe(
-        top_products.rename(columns={"product": "Product", "units_sold": "Units Sold", "revenue": "Revenue (TSh)"}),
+        top_products.rename(columns={"product": "Product", "units_sold": "Units Sold", "sales": "Sales (TSh)"}),
         use_container_width=True,
     )
 
 left, right = st.columns(2)
 
 with left:
-    st.markdown("**Revenue over time**")
+    st.markdown("**Sales over time**")
 
     fig_trend = px.line(
         daily,
         x="day",
-        y="revenue",
+        y="sales",
         markers=True,
         labels={
             "day": "Date",
-            "revenue": "Revenue (TSh)",
+            "sales": "Sales (TSh)",
         },
     )
 
@@ -402,18 +402,18 @@ with left:
     st.plotly_chart(fig_trend, use_container_width=True)
 
 with right:
-    st.markdown("**Revenue by product**")
+    st.markdown("**Sales by product**")
 
     fig_products = px.bar(
-        product_revenue,
-        x="revenue",
+        product_sales,
+        x="sales",
         y="product",
         orientation="h",
         labels={
             "product": "Product",
-            "revenue": "Revenue (TSh)",
+            "sales": "Sales (TSh)",
         },
-        text="revenue",
+        text="sales",
     )
     fig_products.update_traces(
         texttemplate="%{text:,.0f}",
@@ -421,7 +421,7 @@ with right:
         cliponaxis=False,
         hovertemplate=(
             "Product: %{y}<br>"
-            "Revenue: TSh %{x:,.0f}"
+            "Sales: TSh %{x:,.0f}"
             "<extra></extra>"
         ),
 
@@ -429,7 +429,7 @@ with right:
 
     fig_products.update_layout(
         yaxis={"categoryorder": "total ascending"},
-        xaxis_title="Revenue (TSh)",
+        xaxis_title="Sales (TSh)",
         yaxis_title="Product",
         showlegend=False,
     )
@@ -445,14 +445,14 @@ display["date"] = display["date"].dt.strftime("%Y-%m-%d")
 display["unit_price"] = display["unit_price"].map(
     lambda x: f"{CURRENCY} {x:,.0f}"
 )
-display["revenue"] = display["revenue"].map(
+display["sales"] = display["sales"].map(
     lambda x: f"{CURRENCY} {x:,.0f}"
 )
 
 st.dataframe(
     display[
         ["date", "order_id", "product", "quantity",
-         "unit_price", "revenue"]
+         "unit_price", "sales"]
     ],
     use_container_width=True,
     hide_index=True,
@@ -469,5 +469,5 @@ st.download_button(
 )
 
 st.caption(
-    "DukaSmart prototype · Revenue is sales value, not net profit."
+    "DukaSmart prototype · Sales is sales value, not net profit."
 )

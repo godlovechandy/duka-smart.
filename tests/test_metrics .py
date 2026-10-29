@@ -14,7 +14,7 @@ def test_calculates_sales_metrics_correctly():
 
     result = calculate_metrics(sales)
 
-    assert result["total_revenue"] == 11500
+    assert result["total_sales"] == 11500
     assert result["total_orders"] == 2
     assert result["units_sold"] == 9
     assert result["average_order_value"] == 5750
@@ -29,7 +29,7 @@ def test_empty_sales_returns_zero_metrics():
 
     result = calculate_metrics(sales)
 
-    assert result["total_revenue"] == 0
+    assert result["total_sales"] == 0
     assert result["total_orders"] == 0
     assert result["units_sold"] == 0
     assert result["average_order_value"] == 0
