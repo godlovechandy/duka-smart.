@@ -1,6 +1,5 @@
 
 from pathlib import Path
-from metrics import calculate_metrics
 
 import numpy as np
 import pandas as pd
@@ -313,28 +312,26 @@ average_order_value = (
 
 st.subheader("Sales overview")
 
-metrics = calculate_metrics(filtered)
-
 col1, col2, col3, col4 = st.columns(4)
 
 col1.metric(
     "Sales",
-    f"TSh {metrics['total_sales']:,.0f}"
+    f"TSh {total_sales:,.0f}"
 )
 
 col2.metric(
     "Orders",
-    f"{metrics['total_orders']:,}"
+    f"{total_orders:,}"
 )
 
 col3.metric(
     "Units Sold",
-    f"{metrics['units_sold']:,}"
+    f"{total_units:,}"
 )
 
 col4.metric(
     "Average Order Value",
-    f"TSh {metrics['average_order_value']:,.0f}"
+    f"TSh {average_order_value:,.0f}"
 )
 
 # ---------- Charts ----------
